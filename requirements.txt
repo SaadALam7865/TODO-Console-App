@@ -1,0 +1,2 @@
+# No specific dependencies required for the basic console application
+# Python 3.13+ standard library is sufficient

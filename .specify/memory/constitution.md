@@ -1,55 +1,49 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Evolution of Todo - Phase I: In-Memory Python Console Application Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Spec-Driven Development
+All features must originate from markdown specifications; no manual coding permitted. Every implementation must be traceable to a specification document in /specs_history folder.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### AI-First Architecture
+Claude Code generates 100% of implementation code from refined specifications. Human intervention is limited to specification creation, refinement, and validation of output.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Iterative Refinement
+Specifications must be refined until Claude Code produces correct, working output. No manual fixes to generated code are allowed - only spec improvements.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### Clean Code Standards
+Generated code must follow Python best practices, proper structure, and maintainability principles. Code must pass basic Python linting standards.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Console-First Interface
+All application functionality must be accessible via console commands. Focus on clear user feedback and robust input validation in console environment.
 
-### [PRINCIPLE_6_NAME]
+### In-Memory Data Management
+Data storage is limited to in-memory only for Phase I. No persistence mechanisms outside of application memory. Proper data validation and error handling required.
 
+## Technology Compliance
+- Python version: 3.13+
+- Package manager: UV exclusively
+- Development tools: Claude Code + Spec-Kit Plus
+- Environment: WSL 2 for Windows users (Ubuntu 22.04)
+- No database, API, or cloud deployment in Phase I
 
-[PRINCIPLE__DESCRIPTION]
+## Development Workflow
+1. Write specification in markdown format in /specs_history
+2. Submit to Claude Code via Spec-Kit Plus workflow
+3. Review generated code against acceptance criteria
+4. Refine spec if output is incorrect (no manual code fixes allowed)
+5. Iterate until Claude Code generates correct implementation
+6. All features must have dedicated spec files before implementation
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Quality Gates
+- All 5 core features must be fully implemented (Add Task, View Tasks, Update Task, Delete Task, Mark Complete/Incomplete)
+- Code must prevent application crashes through proper error handling
+- User input validation must be robust
+- All features must be demonstrable via console commands
+- Data must persist during single session (in-memory)
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution defines the mandatory practices for the Evolution of Todo - Phase I project. All development activities must comply with these principles. Amendments require explicit documentation of changes, approval from project stakeholders, and a migration plan for existing artifacts. All pull requests and code reviews must verify constitution compliance. Development complexity must be justified against these principles.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-12-28 | **Last Amended**: 2025-12-28
