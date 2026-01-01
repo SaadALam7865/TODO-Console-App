@@ -4,11 +4,18 @@ This is a command-line todo manager built using spec-driven development with Cla
 
 ## Features
 
+### Basic Features (Phase I)
 1. **Add Task**: Create tasks with title and description
 2. **View Tasks**: List all tasks with status indicators
 3. **Update Task**: Modify existing task details
 4. **Delete Task**: Remove tasks by unique ID
 5. **Mark Complete/Incomplete**: Toggle task completion status
+
+### Intermediate Features (Phase I - Enhanced)
+6. **Due Dates**: Assign, update, and view tasks with due dates; see overdue indicators
+7. **Priorities & Tags**: Set priority levels (High/Medium/Low) and categories (Work/Home/Personal)
+8. **Search & Filter**: Find tasks by keyword or filter by status, priority, or tags
+9. **Sort Tasks**: Organize task lists by due date, priority, title, or completion status
 
 ## Prerequisites
 

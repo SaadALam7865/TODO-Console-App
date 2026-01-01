@@ -27,18 +27,29 @@ The Evolution of Todo - Phase I: In-Memory Python Console Application was built 
 ## Specification Evolution
 
 The `/specs_history` folder contains all specification iterations:
-- `todo_app_spec.md` - Main specification for the Phase I application
-- Additional specs may be added as requirements were refined
+- `todo_app_spec.md` - Main specification for the Phase I application (basic features)
+- `spec_10_due_dates.md` - Specification for due date functionality (intermediate feature)
+- `spec_11_priorities_and_tags.md` - Specification for priority and tag functionality (intermediate feature)
+- `spec_12_search_and_filter.md` - Specification for search and filter functionality (intermediate feature)
+- `spec_13_sort_tasks.md` - Specification for task sorting functionality (intermediate feature)
+- `intermediate_features_summary.md` - Summary of all intermediate features
 
 ## Prompts and Iterations
 
 During development, various prompts were used to generate different components:
 
+### Basic Features (Phase I)
 1. **Initial Application Structure**: Prompts for creating the main application loop and menu system
 2. **Data Model**: Prompts for defining the Task class and in-memory storage
 3. **Feature Implementation**: Separate prompts for each of the 5 core features
 4. **Error Handling**: Prompts for adding validation and error prevention
 5. **UI/UX**: Prompts for improving console interface and user experience
+
+### Intermediate Features (Phase I - Enhanced)
+6. **Due Date Implementation**: Prompts for adding due date functionality with validation
+7. **Priority and Tag Implementation**: Prompts for adding priority levels and tag categories
+8. **Search and Filter Implementation**: Prompts for keyword search and multi-criteria filtering
+9. **Sort Functionality Implementation**: Prompts for multiple sorting criteria and order management
 
 ## Quality Assurance
 
@@ -53,13 +64,22 @@ During development, various prompts were used to generate different components:
 - Console-based interface only
 - Python 3.13+ required
 - UV package manager required for dependencies
-- Phase I scope limited to 5 core features
+- Phase I scope includes 5 basic + 4 intermediate features (9 total features)
+- No database persistence (Phase II)
+- No web interface or API (Phase II-III)
+- No multi-user functionality
+- No advanced scheduling or notifications
+- No file attachments or subtasks
 
 ## Success Metrics
 
-- All 5 core features implemented correctly
+- All 9 features implemented correctly (5 basic + 4 intermediate)
 - Application runs without crashes
-- Input validation prevents errors
+- Input validation prevents errors across all features
 - All functionality accessible through console interface
 - Code quality meets professional standards
 - Complete specification-to-code traceability maintained
+- Enhanced data model accommodates new fields without breaking basic features
+- User experience remains intuitive with clear prompts and formatted output
+- All basic features continue working after intermediate feature additions
+- 100% code generation via Claude Code from refined specifications

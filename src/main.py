@@ -3,25 +3,48 @@ Todo Console Application
 Phase I: In-Memory Python Console Application
 
 A command-line todo manager with the following features:
-1. Add Task: Create task with title and description
+1. Add Task: Create task with title, description, due date, priority, and tags
 2. View Tasks: List all tasks with status indicators
 3. Update Task: Modify existing task details
 4. Delete Task: Remove task by unique ID
 5. Mark Complete/Incomplete: Toggle task completion status
+6. Add Due Date: Set due date for tasks
+7. Add Priority: Set priority level for tasks
+8. Add Tags: Assign tags to tasks
+9. Search Tasks: Find tasks by keyword
+10. Filter Tasks: Show tasks by criteria
+11. Sort Tasks: Order tasks by various criteria
 """
 
-class Task:
-    """Represents a single task in the todo application."""
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-    def __init__(self, task_id, title, description, completed=False):
-        self.id = task_id
-        self.title = title
-        self.description = description
-        self.completed = completed
-
-    def __str__(self):
-        status = "X" if self.completed else "O"
-        return f"[{status}] ID: {self.id} | Title: {self.title} | Description: {self.description}"
+from models.task import Task
+from services.date_validator import is_valid_date
+from services.priority_validator import normalize_priority
+from services.tag_manager import normalize_tags
+from services.search_service import search_tasks_by_keyword
+from services.filter_service import filter_tasks_by_combined_criteria
+from services.sort_service import (
+    sort_tasks_by_due_date,
+    sort_tasks_by_priority,
+    sort_tasks_alphabetically,
+    sort_tasks_by_creation_order,
+    sort_tasks_by_completion_status
+)
+from cli.menu import (
+    display_menu,
+    get_user_choice,
+    handle_add_task,
+    handle_view_tasks,
+    handle_update_task,
+    handle_delete_task,
+    handle_toggle_status,
+    handle_search_tasks,
+    handle_filter_tasks,
+    handle_sort_tasks
+)
 
 
 class TodoApp:
@@ -31,12 +54,23 @@ class TodoApp:
         self.tasks = {}
         self.next_id = 1
 
-    def add_task(self, title, description):
+    def add_task(self, title, description, due_date=None, priority="Medium", tags=None):
         """Add a new task to the application."""
         if not title or not title.strip():
             raise ValueError("Task title cannot be empty")
 
-        task = Task(self.next_id, title.strip(), description.strip() if description else "")
+        # Validate due date if provided
+        if due_date and not is_valid_date(due_date):
+            raise ValueError(f"Invalid due date format: {due_date}. Please use YYYY-MM-DD format.")
+
+        # Normalize priority
+        normalized_priority = normalize_priority(priority)
+
+        # Normalize tags
+        normalized_tags = normalize_tags(tags) if tags else []
+
+        task = Task(self.next_id, title.strip(), description.strip() if description else "",
+                   completed=False, due_date=due_date, priority=normalized_priority, tags=normalized_tags)
         self.tasks[self.next_id] = task
         self.next_id += 1
         return task
@@ -45,7 +79,7 @@ class TodoApp:
         """Return a list of all tasks."""
         return [self.tasks[tid] for tid in sorted(self.tasks.keys())]
 
-    def update_task(self, task_id, title=None, description=None):
+    def update_task(self, task_id, title=None, description=None, due_date=None, priority=None, tags=None):
         """Update an existing task."""
         if task_id not in self.tasks:
             raise ValueError(f"Task with ID {task_id} does not exist")
@@ -57,6 +91,16 @@ class TodoApp:
             task.title = title.strip()
         if description is not None:
             task.description = description.strip()
+        if due_date is not None:
+            # Allow None to clear the due date
+            if due_date and not is_valid_date(due_date):
+                raise ValueError(f"Invalid due date format: {due_date}. Please use YYYY-MM-DD format.")
+            task.set_due_date(due_date)
+        if priority is not None:
+            task.set_priority(priority)
+        if tags is not None:
+            # Update tags list
+            task.tags = normalize_tags(tags)
 
         return task
 
@@ -78,163 +122,6 @@ class TodoApp:
         return task
 
 
-def display_menu():
-    """Display the main menu options."""
-    print("\n" + "="*50)
-    print("TODO APPLICATION - MAIN MENU")
-    print("="*50)
-    print("1. Add Task")
-    print("2. View Tasks")
-    print("3. Update Task")
-    print("4. Delete Task")
-    print("5. Mark Complete/Incomplete")
-    print("6. Exit")
-    print("="*50)
-
-
-def get_user_choice():
-    """Get and validate user menu choice."""
-    while True:
-        try:
-            choice = input("Enter your choice (1-6): ").strip()
-            if choice in ['1', '2', '3', '4', '5', '6']:
-                return int(choice)
-            else:
-                print("Invalid choice. Please enter a number between 1 and 6.")
-        except KeyboardInterrupt:
-            print("\nExiting application...")
-            return 6
-        except EOFError:
-            print("\nExiting application...")
-            return 6
-
-
-def handle_add_task(app):
-    """Handle the add task functionality."""
-    print("\n--- ADD TASK ---")
-    try:
-        title = input("Enter task title: ").strip()
-        if not title:
-            print("Error: Task title cannot be empty.")
-            return
-
-        description = input("Enter task description (optional): ").strip()
-
-        task = app.add_task(title, description)
-        print(f"Task added successfully! ID: {task.id}")
-    except ValueError as e:
-        print(f"Error: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
-
-def handle_view_tasks(app):
-    """Handle the view tasks functionality."""
-    print("\n--- VIEW TASKS ---")
-    tasks = app.view_tasks()
-
-    if not tasks:
-        print("No tasks found.")
-        return
-
-    print(f"Total tasks: {len(tasks)}")
-    for task in tasks:
-        print(task)
-
-
-def handle_update_task(app):
-    """Handle the update task functionality."""
-    print("\n--- UPDATE TASK ---")
-    try:
-        if not app.tasks:
-            print("No tasks available to update.")
-            return
-
-        task_id = int(input("Enter task ID to update: "))
-
-        # Check if task exists and display current details
-        if task_id not in app.tasks:
-            print(f"Task with ID {task_id} does not exist.")
-            return
-
-        current_task = app.tasks[task_id]
-        print(f"Current task: {current_task}")
-
-        title = input(f"Enter new title (current: '{current_task.title}', press Enter to keep current): ").strip()
-        description = input(f"Enter new description (current: '{current_task.description}', press Enter to keep current): ").strip()
-
-        # Only update if user provided new values
-        new_title = title if title else None
-        new_description = description if description else None
-
-        # If user pressed Enter without typing anything, treat as no change
-        if title == "":
-            new_title = None
-        if description == "":
-            new_description = None
-
-        updated_task = app.update_task(task_id, new_title, new_description)
-        print(f"Task updated successfully!")
-        print(f"Updated task: {updated_task}")
-
-    except ValueError as e:
-        if "invalid literal" in str(e):
-            print("Error: Please enter a valid task ID (number).")
-        else:
-            print(f"Error: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
-
-def handle_delete_task(app):
-    """Handle the delete task functionality."""
-    print("\n--- DELETE TASK ---")
-    try:
-        if not app.tasks:
-            print("No tasks available to delete.")
-            return
-
-        task_id = int(input("Enter task ID to delete: "))
-
-        deleted_task = app.delete_task(task_id)
-        print(f"Task deleted successfully!")
-        print(f"Deleted task: {deleted_task}")
-
-    except ValueError as e:
-        if "invalid literal" in str(e):
-            print("Error: Please enter a valid task ID (number).")
-        else:
-            print(f"Error: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
-
-def handle_toggle_status(app):
-    """Handle the toggle task status functionality."""
-    print("\n--- TOGGLE TASK STATUS ---")
-    try:
-        if not app.tasks:
-            print("No tasks available to toggle.")
-            return
-
-        task_id = int(input("Enter task ID to toggle status: "))
-
-        if task_id not in app.tasks:
-            print(f"Task with ID {task_id} does not exist.")
-            return
-
-        task = app.toggle_task_status(task_id)
-        status = "completed" if task.completed else "incomplete"
-        print(f"Task status updated successfully! Task is now {status}.")
-        print(f"Updated task: {task}")
-
-    except ValueError as e:
-        if "invalid literal" in str(e):
-            print("Error: Please enter a valid task ID (number).")
-        else:
-            print(f"Error: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
 
 
 def main():
@@ -259,6 +146,12 @@ def main():
         elif choice == 5:
             handle_toggle_status(app)
         elif choice == 6:
+            handle_search_tasks(app)
+        elif choice == 7:
+            handle_filter_tasks(app)
+        elif choice == 8:
+            handle_sort_tasks(app)
+        elif choice == 9:
             print("\nThank you for using the Todo Console Application!")
             print("Goodbye!")
             break
