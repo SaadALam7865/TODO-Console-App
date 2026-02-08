@@ -1,0 +1,10 @@
+# Dependencies for Evolution of Todo - Phase I: Basic + Intermediate + Advanced features
+# Python 3.13+ standard library + additional libraries for advanced features
+
+# Advanced features dependencies
+plyer==2.1.0          # Cross-platform desktop notifications
+APScheduler==3.10.4   # Advanced Python Scheduler for background tasks
+python-dateutil==2.8.2 # Enhanced date parsing and manipulation
+
+# No specific dependencies required for the basic console application
+# Python 3.13+ standard library is sufficient for basic features
